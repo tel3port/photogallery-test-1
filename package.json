@@ -1,0 +1,26 @@
+{
+  "name": "photogallery-app",
+  "version": "1.0.0",
+  "description": "phtogallery practice app with MVC",
+  "default": "index.html",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tel3port/photogallery-test-1.git"
+  },
+  "keywords": [
+    "photogallery"
+  ],
+  "author": "m",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tel3port/photogallery-test-1/issues"
+  },
+  "homepage": "https://github.com/tel3port/photogallery-test-1#readme",
+  "devDependencies": {
+    "parcel": "^2.6.0"
+  }
+}
