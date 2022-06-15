@@ -503,11 +503,14 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"a2PJv":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _esArrayIncludesJs = require("core-js/modules/es.array.includes.js");
 var _webImmediateJs = require("core-js/modules/web.immediate.js");
 //`https://api.pexels.com/v1/search?query=${query}&page=${page_num}
 //`https://api.pexels.com/v1/curated?page=${page_num}`
 var _regeneratorRuntime = require("regenerator-runtime");
+var _galleryViewJs = require("./views/galleryView.js");
+var _galleryViewJsDefault = parcelHelpers.interopDefault(_galleryViewJs);
 "use strict";
 API_KEY = "563492ad6f917000010000011bf92e0340834b29924f9cbaf7883c1d";
 let parentEl = document.querySelector(".gallery");
@@ -576,11 +579,12 @@ function getRandomInt(min, max) {
 window.addEventListener("load", init);
 function init() {
     let randPageNum = getRandomInt(1, 40);
-    getCuratedPhotos(randPageNum);
+    console.log(randPageNum);
+// getCuratedPhotos(randPageNum)
 }
 init();
 
-},{"core-js/modules/es.array.includes.js":"dkJzX","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime":"dXNgZ"}],"dkJzX":[function(require,module,exports) {
+},{"core-js/modules/es.array.includes.js":"dkJzX","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime":"dXNgZ","./views/galleryView.js":"lkTfe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dkJzX":[function(require,module,exports) {
 "use strict";
 var $ = require("../internals/export");
 var $includes = require("../internals/array-includes").includes;
@@ -2381,6 +2385,47 @@ try {
     if (typeof globalThis === "object") globalThis.regeneratorRuntime = runtime;
     else Function("r", "regeneratorRuntime = r")(runtime);
 }
+
+},{}],"lkTfe":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+class GalleryView {
+    generateHTML() {}
+    renderSpinner() {}
+    renderError() {}
+    clearGallery() {}
+}
+exports.default = new GalleryView();
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
 
 },{}]},["8qXCU","a2PJv"], "a2PJv", "parcelRequire931d")
 

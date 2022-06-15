@@ -5,6 +5,7 @@ API_KEY = "563492ad6f917000010000011bf92e0340834b29924f9cbaf7883c1d";
 
 import 'regenerator-runtime'
 import 'core-js/stable'
+import galleryView from './views/galleryView.js'
 
 let parentEl = document.querySelector(".gallery")
 let searchFormEl = document.querySelector(".search-form")
@@ -107,7 +108,8 @@ window.addEventListener("load", init)
 
 function init() {
     let randPageNum = getRandomInt(1, 40)
-    getCuratedPhotos(randPageNum)
+    console.log(randPageNum);
+    // getCuratedPhotos(randPageNum)
 
 }
 
