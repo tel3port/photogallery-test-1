@@ -152,8 +152,33 @@ input{
     top: 0;
     color:  rgba(0, 0, 0, 0.6);
   }
+
+  
+  /* spinner */
+  #loading {
+    /* position:absolute;
+    left: 50%; */
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(2, 2, 2, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    -webkit-animation: spin 1s ease-in-out infinite;
+  }
+  
+  @keyframes spin {
+    to { -webkit-transform: rotate(360deg); }
+  }
+  @-webkit-keyframes spin {
+    to { -webkit-transform: rotate(360deg); }
+  }
+  
   /* Active and Hoverable Pagination */
   #pagination {
+    position:absolute;
+    left: 45%;
     margin-top: 10px;
     padding: 0;
     text-align: center;

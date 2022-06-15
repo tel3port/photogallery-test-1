@@ -97,6 +97,16 @@ function clearGallery() {
     parentEl.innerHTML = ""
 
 }
+
+function renderSpinner() {
+    clearGallery();
+    let spinnerHTML = `
+    <div id="loading"></div>
+
+    `
+    parentEl.insertAdjacentHTML("afterbegin", spinnerHTML)
+
+}
 // radom number between two nums inclusive
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -108,8 +118,10 @@ window.addEventListener("load", init)
 
 function init() {
     let randPageNum = getRandomInt(1, 40)
-    console.log(randPageNum);
     // getCuratedPhotos(randPageNum)
+
+    // renderSpinner()
+
 
 }
 
