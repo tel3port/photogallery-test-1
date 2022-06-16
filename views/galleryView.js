@@ -3,8 +3,27 @@ class GalleryView {
     #searchFormEl = document.querySelector(".search-form")
     #searchEl = document.querySelector(".search-input")
 
-    generateHTML() {
+    _generateHTML(response) {
+        let html = ""
 
+        response.photos.forEach(photo => {
+            html += `
+            <div class="item">
+                <a href="${photo.url}">
+                    <img src="${photo.src.original}" alt="${photo.alt}">
+                    <h3>${photo.photographer}</h3>
+                </a>
+            </div>
+            `
+        })
+
+        return html
+
+    }
+
+    _getSearchQuery() {
+        let searchText = this.#searchEl.value.trim();
+        return searchText ? searchText : "light";
     }
 
     renderSpinner() {
@@ -22,36 +41,30 @@ class GalleryView {
     }
 
     _clearGallery() {
-        this.#parentEl.innerHTML = ""
+        this.#parentEl.innerHTML = "";
 
     }
 
     displayImages(response) {
-        this._clearGallery()
-
-        let html = ""
-
-        response.photos.forEach(photo => {
-            html += `
-            <div class="item">
-                <a href="${photo.url}">
-                    <img src="${photo.src.original}" alt="${photo.alt}">
-                    <h3>${photo.photographer}</h3>
-                </a>
-            </div>
-            `
-        })
-
-        this.#parentEl.insertAdjacentHTML("afterbegin", html)
-
+        this._clearGallery();
+        this.#parentEl.insertAdjacentHTML("afterbegin", this._generateHTML(response))
 
     }
 
 
     renderImagesHandler(curatedImagescallback) {
         window.addEventListener("load", function (e) {
-            curatedImagescallback()
+            curatedImagescallback();
 
+        })
+
+    }
+
+    searchImagesHandler(searchImgCallback) {
+        this.#searchFormEl.addEventListener("submit", (e) => {
+            e.preventDefault();
+            let text = this._getSearchQuery()
+            searchImgCallback(text, 4)
         })
 
     }

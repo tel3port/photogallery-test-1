@@ -1,7 +1,27 @@
 'use strict'
-import { API_KEY, SEARCH_URL, CURATED_URL } from "./config";
+import { API_KEY } from "./config";
 
-async function getJSON(query, pageNum) {
+async function getJSON(endpoint) {
+    try {
+
+        let rawData = await fetch(endpoint,
+            {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: API_KEY
+
+                }
+
+            })
+
+        return await (rawData.json())
+
+
+    } catch (error) {
+        console.log(error);
+
+    }
 
 }
 

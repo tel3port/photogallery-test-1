@@ -504,10 +504,8 @@ function hmrAcceptRun(bundle, id) {
 
 },{}],"a2PJv":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-var _esArrayIncludesJs = require("core-js/modules/es.array.includes.js");
+var _esArrayIncludesJs = require("core-js/modules/es.array.includes.js"); // init()
 var _webImmediateJs = require("core-js/modules/web.immediate.js");
-//`https://api.pexels.com/v1/search?query=${query}&page=${page_num}
-//`https://api.pexels.com/v1/curated?page=${page_num}`
 var _regeneratorRuntime = require("regenerator-runtime");
 var _galleryViewJs = require("./views/galleryView.js");
 var _galleryViewJsDefault = parcelHelpers.interopDefault(_galleryViewJs);
@@ -515,34 +513,19 @@ var _helpersJs = require("./helpers.js");
 var _configJs = require("./config.js");
 var _modelJs = require("./model.js");
 "use strict";
-API_KEY = "563492ad6f917000010000011bf92e0340834b29924f9cbaf7883c1d";
-function controlSearchImages() {}
+async function controlSearchImages(searchText, pageNum = 2) {
+    let searchData = await (0, _modelJs.searchImages)(searchText, pageNum);
+    (0, _galleryViewJsDefault.default).displayImages(searchData);
+}
 async function controlQuratedImages() {
     let randomPageNum = (0, _helpersJs.getRandomInt)((0, _configJs.MIN_NUM), (0, _configJs.MAX_NUM));
     let imageData = await (0, _modelJs.getQuratedImages)(randomPageNum);
     (0, _galleryViewJsDefault.default).displayImages(imageData);
 }
-// searchFormEl.addEventListener("submit", function (e) {
-//     e.preventDefault();
-//     let searchText = searchEl.value.trim()
-//     if (!searchText) return;
-//     searchImages(searchText, 1)
-// })
-// async function searchImages(query, page_num) {
-// }
-// async function getCuratedPhotos(page_num) {
-// }
-// function displayImages(response) {
-// }
-// function clearGallery() {
-// }
-// function renderSpinner() {
-// }
-// window.addEventListener("load", init)
 function init() {
     (0, _galleryViewJsDefault.default).renderImagesHandler(controlQuratedImages);
+    (0, _galleryViewJsDefault.default).searchImagesHandler(controlSearchImages);
 }
-init();
 
 },{"core-js/modules/es.array.includes.js":"dkJzX","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime":"dXNgZ","./views/galleryView.js":"lkTfe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./helpers.js":"9Ty9u","./config.js":"bSr8D","./model.js":"4mRaZ"}],"dkJzX":[function(require,module,exports) {
 "use strict";
@@ -2353,7 +2336,24 @@ class GalleryView {
     #parentEl = document.querySelector(".gallery");
     #searchFormEl = document.querySelector(".search-form");
     #searchEl = document.querySelector(".search-input");
-    generateHTML() {}
+    _generateHTML(response) {
+        let html = "";
+        response.photos.forEach((photo)=>{
+            html += `
+            <div class="item">
+                <a href="${photo.url}">
+                    <img src="${photo.src.original}" alt="${photo.alt}">
+                    <h3>${photo.photographer}</h3>
+                </a>
+            </div>
+            `;
+        });
+        return html;
+    }
+    _getSearchQuery() {
+        let searchText = this.#searchEl.value.trim();
+        return searchText ? searchText : "light";
+    }
     renderSpinner() {
         this._clearGallery();
         let spinnerHTML = `
@@ -2368,22 +2368,18 @@ class GalleryView {
     }
     displayImages(response) {
         this._clearGallery();
-        let html = "";
-        response.photos.forEach((photo)=>{
-            html += `
-            <div class="item">
-                <a href="${photo.url}">
-                    <img src="${photo.src.original}" alt="${photo.alt}">
-                    <h3>${photo.photographer}</h3>
-                </a>
-            </div>
-            `;
-        });
-        this.#parentEl.insertAdjacentHTML("afterbegin", html);
+        this.#parentEl.insertAdjacentHTML("afterbegin", this._generateHTML(response));
     }
     renderImagesHandler(curatedImagescallback) {
         window.addEventListener("load", function(e) {
             curatedImagescallback();
+        });
+    }
+    searchImagesHandler(searchImgCallback) {
+        this.#searchFormEl.addEventListener("submit", (e)=>{
+            e.preventDefault();
+            let text = this._getSearchQuery();
+            searchImgCallback(text, 4);
         });
     }
 }
@@ -2426,7 +2422,20 @@ parcelHelpers.export(exports, "getJSON", ()=>getJSON);
 parcelHelpers.export(exports, "getRandomInt", ()=>getRandomInt);
 var _config = require("./config");
 "use strict";
-async function getJSON(query, pageNum) {}
+async function getJSON(endpoint) {
+    try {
+        let rawData = await fetch(endpoint, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                Authorization: (0, _config.API_KEY)
+            }
+        });
+        return await rawData.json();
+    } catch (error) {
+        console.log(error);
+    }
+}
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -2443,8 +2452,8 @@ parcelHelpers.export(exports, "MIN_NUM", ()=>MIN_NUM);
 parcelHelpers.export(exports, "MAX_NUM", ()=>MAX_NUM);
 "use strict";
 let API_KEY = "563492ad6f917000010000011bf92e0340834b29924f9cbaf7883c1d";
-let SEARCH_URL = "https://api.pexels.com/v1/search?";
-let CURATED_URL = "https://api.pexels.com/v1/curated?";
+let SEARCH_URL = "https://api.pexels.com/v1/search?query=";
+let CURATED_URL = "https://api.pexels.com/v1/curated?page=";
 let MIN_NUM = 1;
 let MAX_NUM = 50;
 
@@ -2453,37 +2462,26 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "searchImages", ()=>searchImages);
 parcelHelpers.export(exports, "getQuratedImages", ()=>getQuratedImages);
+var _config = require("./config");
 var _helpers = require("./helpers");
 "use strict";
 async function searchImages(query, page_num) {
     try {
-        let rawData = await fetch(`https://api.pexels.com/v1/search?query=${query}&page=${page_num}`, {
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-                Authorization: API_KEY
-            }
-        });
-        let imageData = await rawData.json();
+        let searchUrl = `${(0, _config.SEARCH_URL)}${query}&page=${page_num}`;
+        return await (0, _helpers.getJSON)(searchUrl);
     } catch (error) {
         console.log(error);
     }
 }
 async function getQuratedImages(page_num) {
     try {
-        let rawData = await fetch(`https://api.pexels.com/v1/curated?page=${page_num}`, {
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-                Authorization: API_KEY
-            }
-        });
-        return await rawData.json();
+        let quratedUrl = `${(0, _config.CURATED_URL)}${page_num}`;
+        return await (0, _helpers.getJSON)(quratedUrl);
     } catch (error) {
         console.log(error);
     }
 }
 
-},{"./helpers":"9Ty9u","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["8qXCU","a2PJv"], "a2PJv", "parcelRequire931d")
+},{"./helpers":"9Ty9u","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./config":"bSr8D"}]},["8qXCU","a2PJv"], "a2PJv", "parcelRequire931d")
 
 //# sourceMappingURL=index.561fface.js.map
