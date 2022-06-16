@@ -511,88 +511,40 @@ var _webImmediateJs = require("core-js/modules/web.immediate.js");
 var _regeneratorRuntime = require("regenerator-runtime");
 var _galleryViewJs = require("./views/galleryView.js");
 var _galleryViewJsDefault = parcelHelpers.interopDefault(_galleryViewJs);
+var _helpersJs = require("./helpers.js");
+var _configJs = require("./config.js");
+var _modelJs = require("./model.js");
 "use strict";
 API_KEY = "563492ad6f917000010000011bf92e0340834b29924f9cbaf7883c1d";
-let parentEl = document.querySelector(".gallery");
-let searchFormEl = document.querySelector(".search-form");
-let searchEl = document.querySelector(".search-input");
-searchFormEl.addEventListener("submit", function(e) {
-    e.preventDefault();
-    let searchText = searchEl.value.trim();
-    if (!searchText) return;
-    searchImages(searchText, 1);
-});
-async function searchImages(query, page_num) {
-    try {
-        let rawData = await fetch(`https://api.pexels.com/v1/search?query=${query}&page=${page_num}`, {
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-                Authorization: API_KEY
-            }
-        });
-        let imageData = await rawData.json();
-        displayImages(imageData);
-    } catch (error) {
-        console.log(error);
-    }
+function controlSearchImages() {}
+async function controlQuratedImages() {
+    let randomPageNum = (0, _helpersJs.getRandomInt)((0, _configJs.MIN_NUM), (0, _configJs.MAX_NUM));
+    let imageData = await (0, _modelJs.getQuratedImages)(randomPageNum);
+    (0, _galleryViewJsDefault.default).displayImages(imageData);
 }
-async function getCuratedPhotos(page_num) {
-    try {
-        let rawData = await fetch(`https://api.pexels.com/v1/curated?page=${page_num}`, {
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-                Authorization: API_KEY
-            }
-        });
-        let imageData = await rawData.json();
-        displayImages(imageData);
-    } catch (error) {
-        console.log(error);
-    }
-}
-function displayImages(response) {
-    clearGallery();
-    let html = "";
-    response.photos.forEach((photo)=>{
-        html += `
-        <div class="item">
-            <a href="${photo.url}">
-                <img src="${photo.src.original}" alt="${photo.alt}">
-                <h3>${photo.photographer}</h3>
-            </a>
-        </div>
-        `;
-    });
-    parentEl.insertAdjacentHTML("afterbegin", html);
-}
-function clearGallery() {
-    parentEl.innerHTML = "";
-}
-function renderSpinner() {
-    clearGallery();
-    let spinnerHTML = `
-    <div id="loading"></div>
-
-    `;
-    parentEl.insertAdjacentHTML("afterbegin", spinnerHTML);
-}
-// radom number between two nums inclusive
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-window.addEventListener("load", init);
+// searchFormEl.addEventListener("submit", function (e) {
+//     e.preventDefault();
+//     let searchText = searchEl.value.trim()
+//     if (!searchText) return;
+//     searchImages(searchText, 1)
+// })
+// async function searchImages(query, page_num) {
+// }
+// async function getCuratedPhotos(page_num) {
+// }
+// function displayImages(response) {
+// }
+// function clearGallery() {
+// }
+// function renderSpinner() {
+// }
+// window.addEventListener("load", init)
 function init() {
-    let randPageNum = getRandomInt(1, 40);
-// getCuratedPhotos(randPageNum)
-// renderSpinner()
+    (0, _galleryViewJsDefault.default).renderImagesHandler(controlQuratedImages);
 }
 init();
 
-},{"core-js/modules/es.array.includes.js":"dkJzX","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime":"dXNgZ","./views/galleryView.js":"lkTfe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dkJzX":[function(require,module,exports) {
+},{"core-js/modules/es.array.includes.js":"dkJzX","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime":"dXNgZ","./views/galleryView.js":"lkTfe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./helpers.js":"9Ty9u","./config.js":"bSr8D","./model.js":"4mRaZ"}],"dkJzX":[function(require,module,exports) {
 "use strict";
 var $ = require("../internals/export");
 var $includes = require("../internals/array-includes").includes;
@@ -2398,10 +2350,42 @@ try {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 class GalleryView {
+    #parentEl = document.querySelector(".gallery");
+    #searchFormEl = document.querySelector(".search-form");
+    #searchEl = document.querySelector(".search-input");
     generateHTML() {}
-    renderSpinner() {}
+    renderSpinner() {
+        this._clearGallery();
+        let spinnerHTML = `
+        <div id="loading"></div>
+    
+        `;
+        parentEl.insertAdjacentHTML("afterbegin", spinnerHTML);
+    }
     renderError() {}
-    clearGallery() {}
+    _clearGallery() {
+        this.#parentEl.innerHTML = "";
+    }
+    displayImages(response) {
+        this._clearGallery();
+        let html = "";
+        response.photos.forEach((photo)=>{
+            html += `
+            <div class="item">
+                <a href="${photo.url}">
+                    <img src="${photo.src.original}" alt="${photo.alt}">
+                    <h3>${photo.photographer}</h3>
+                </a>
+            </div>
+            `;
+        });
+        this.#parentEl.insertAdjacentHTML("afterbegin", html);
+    }
+    renderImagesHandler(curatedImagescallback) {
+        window.addEventListener("load", function(e) {
+            curatedImagescallback();
+        });
+    }
 }
 exports.default = new GalleryView();
 
@@ -2435,6 +2419,71 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}]},["8qXCU","a2PJv"], "a2PJv", "parcelRequire931d")
+},{}],"9Ty9u":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getJSON", ()=>getJSON);
+parcelHelpers.export(exports, "getRandomInt", ()=>getRandomInt);
+var _config = require("./config");
+"use strict";
+async function getJSON(query, pageNum) {}
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+},{"./config":"bSr8D","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bSr8D":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "API_KEY", ()=>API_KEY);
+parcelHelpers.export(exports, "SEARCH_URL", ()=>SEARCH_URL);
+parcelHelpers.export(exports, "CURATED_URL", ()=>CURATED_URL);
+parcelHelpers.export(exports, "MIN_NUM", ()=>MIN_NUM);
+parcelHelpers.export(exports, "MAX_NUM", ()=>MAX_NUM);
+"use strict";
+let API_KEY = "563492ad6f917000010000011bf92e0340834b29924f9cbaf7883c1d";
+let SEARCH_URL = "https://api.pexels.com/v1/search?";
+let CURATED_URL = "https://api.pexels.com/v1/curated?";
+let MIN_NUM = 1;
+let MAX_NUM = 50;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4mRaZ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "searchImages", ()=>searchImages);
+parcelHelpers.export(exports, "getQuratedImages", ()=>getQuratedImages);
+var _helpers = require("./helpers");
+"use strict";
+async function searchImages(query, page_num) {
+    try {
+        let rawData = await fetch(`https://api.pexels.com/v1/search?query=${query}&page=${page_num}`, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                Authorization: API_KEY
+            }
+        });
+        let imageData = await rawData.json();
+    } catch (error) {
+        console.log(error);
+    }
+}
+async function getQuratedImages(page_num) {
+    try {
+        let rawData = await fetch(`https://api.pexels.com/v1/curated?page=${page_num}`, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                Authorization: API_KEY
+            }
+        });
+        return await rawData.json();
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+},{"./helpers":"9Ty9u","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["8qXCU","a2PJv"], "a2PJv", "parcelRequire931d")
 
 //# sourceMappingURL=index.561fface.js.map

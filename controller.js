@@ -6,121 +6,65 @@ API_KEY = "563492ad6f917000010000011bf92e0340834b29924f9cbaf7883c1d";
 import 'regenerator-runtime'
 import 'core-js/stable'
 import galleryView from './views/galleryView.js'
-
-let parentEl = document.querySelector(".gallery")
-let searchFormEl = document.querySelector(".search-form")
-let searchEl = document.querySelector(".search-input")
-
-searchFormEl.addEventListener("submit", function (e) {
-    e.preventDefault();
-    let searchText = searchEl.value.trim()
-
-    if (!searchText) return;
-
-    searchImages(searchText, 1)
+import { getRandomInt } from "./helpers.js"
+import { MIN_NUM, MAX_NUM } from "./config.js"
+import { getQuratedImages } from "./model.js"
 
 
-})
+function controlSearchImages() {
 
-async function searchImages(query, page_num) {
+}
 
-    try {
-
-        let rawData = await fetch(`https://api.pexels.com/v1/search?query=${query}&page=${page_num}`,
-            {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    Authorization: API_KEY
-
-                }
-
-            })
-
-        let imageData = await (rawData.json())
-
-        displayImages(imageData);
-    } catch (error) {
-        console.log(error);
-
-    }
+async function controlQuratedImages() {
+    let randomPageNum = getRandomInt(MIN_NUM, MAX_NUM)
+    let imageData = await getQuratedImages(randomPageNum)
+    galleryView.displayImages(imageData)
 
 
 }
 
-async function getCuratedPhotos(page_num) {
+// searchFormEl.addEventListener("submit", function (e) {
+//     e.preventDefault();
+//     let searchText = searchEl.value.trim()
 
-    try {
+//     if (!searchText) return;
 
-        let rawData = await fetch(`https://api.pexels.com/v1/curated?page=${page_num}`,
-            {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    Authorization: API_KEY
+//     searchImages(searchText, 1)
 
-                }
 
-            })
+// })
 
-        let imageData = await (rawData.json())
+// async function searchImages(query, page_num) {
 
-        displayImages(imageData);
-    } catch (error) {
-        console.log(error);
 
-    }
 
-}
+// }
 
-function displayImages(response) {
-    clearGallery()
+// async function getCuratedPhotos(page_num) {
 
-    let html = ""
 
-    response.photos.forEach(photo => {
-        html += `
-        <div class="item">
-            <a href="${photo.url}">
-                <img src="${photo.src.original}" alt="${photo.alt}">
-                <h3>${photo.photographer}</h3>
-            </a>
-        </div>
-        `
-    })
 
-    parentEl.insertAdjacentHTML("afterbegin", html)
+// }
 
-}
+// function displayImages(response) {
 
-function clearGallery() {
-    parentEl.innerHTML = ""
+// }
 
-}
+// function clearGallery() {
 
-function renderSpinner() {
-    clearGallery();
-    let spinnerHTML = `
-    <div id="loading"></div>
+// }
 
-    `
-    parentEl.insertAdjacentHTML("afterbegin", spinnerHTML)
+// function renderSpinner() {
 
-}
-// radom number between two nums inclusive
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
-window.addEventListener("load", init)
+// }
+
+// window.addEventListener("load", init)
 
 function init() {
-    let randPageNum = getRandomInt(1, 40)
-    // getCuratedPhotos(randPageNum)
 
-    // renderSpinner()
+    galleryView.renderImagesHandler(controlQuratedImages)
+
 
 
 }
