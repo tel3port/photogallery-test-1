@@ -61,7 +61,7 @@ class GalleryView {
     }
 
     searchImagesHandler(searchImgCallback) {
-        this.#searchFormEl.addEventListener("submit", (e) => {
+        this.#searchFormEl.addEventListener("submit", function (e) {
             e.preventDefault();
             let text = this._getSearchQuery()
             searchImgCallback(text, 4)

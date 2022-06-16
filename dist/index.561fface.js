@@ -505,6 +505,15 @@ function hmrAcceptRun(bundle, id) {
 },{}],"a2PJv":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _esArrayIncludesJs = require("core-js/modules/es.array.includes.js"); // init()
+ /**
+ * todo:
+ * add the bind to searchImagesHandler
+ * display errors and spinners in the ui
+ * get the modal working
+ * work on pagination
+ * start adding the picture editing  feature
+ * 
+ */ 
 var _webImmediateJs = require("core-js/modules/web.immediate.js");
 var _regeneratorRuntime = require("regenerator-runtime");
 var _galleryViewJs = require("./views/galleryView.js");
@@ -2376,7 +2385,7 @@ class GalleryView {
         });
     }
     searchImagesHandler(searchImgCallback) {
-        this.#searchFormEl.addEventListener("submit", (e)=>{
+        this.#searchFormEl.addEventListener("submit", function(e) {
             e.preventDefault();
             let text = this._getSearchQuery();
             searchImgCallback(text, 4);

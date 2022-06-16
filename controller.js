@@ -33,3 +33,13 @@ function init() {
 }
 
 // init()
+
+/**
+ * todo:
+ * add the bind to searchImagesHandler
+ * display errors and spinners in the ui
+ * get the modal working
+ * work on pagination
+ * start adding the picture editing  feature
+ * 
+ */
